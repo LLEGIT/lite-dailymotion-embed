@@ -8,7 +8,6 @@ import {
   getThumbnailUrl,
   sanitizeHtml,
   generateEmbedUrl,
-  prefersReducedMotion,
   getOptimalThumbnailQuality,
 } from './utils';
 
