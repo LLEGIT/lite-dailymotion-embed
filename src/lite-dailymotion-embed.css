@@ -1,0 +1,274 @@
+/* Lite Dailymotion Embed CSS */
+.lite-dailymotion-embed {
+  --aspect-ratio: 1.7777777778; /* 16:9 */
+  --bg-color: #000000;
+  --play-button-size: 68px;
+  --play-button-bg: rgba(255, 105, 0, 0.9);
+  --play-button-hover-bg: rgba(255, 105, 0, 1);
+  --loading-spinner-size: 40px;
+  --border-radius: 0;
+  --transition-duration: 0.3s;
+
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--aspect-ratio);
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  line-height: 0; /* Prevents layout shift */
+}
+
+.lite-dailymotion-embed *,
+.lite-dailymotion-embed *::before,
+.lite-dailymotion-embed *::after {
+  box-sizing: border-box;
+}
+
+.lite-dailymotion-embed__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Thumbnail */
+.lite-dailymotion-embed__thumbnail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--bg-color);
+  transition: opacity var(--transition-duration) ease;
+}
+
+/* Play Button */
+.lite-dailymotion-embed__play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--play-button-size);
+  height: var(--play-button-size);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all var(--transition-duration) ease;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.lite-dailymotion-embed__play-button:hover,
+.lite-dailymotion-embed__play-button:focus {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.lite-dailymotion-embed__play-button:focus {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.lite-dailymotion-embed__play-button:active {
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+.lite-dailymotion-embed__play-icon {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  transition: filter var(--transition-duration) ease;
+}
+
+.lite-dailymotion-embed__play-button:hover .lite-dailymotion-embed__play-icon {
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+}
+
+/* Loading State */
+.lite-dailymotion-embed__loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity var(--transition-duration) ease;
+}
+
+.lite-dailymotion-embed--loading .lite-dailymotion-embed__loading {
+  opacity: 1;
+}
+
+.lite-dailymotion-embed--loading .lite-dailymotion-embed__play-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Loading Spinner */
+.lite-dailymotion-embed__spinner {
+  width: var(--loading-spinner-size);
+  height: var(--loading-spinner-size);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #ff6900;
+  border-radius: 50%;
+  animation: lite-dailymotion-spin 1s linear infinite;
+}
+
+@keyframes lite-dailymotion-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Activated State (iframe) */
+.lite-dailymotion-embed--activated .lite-dailymotion-embed__thumbnail,
+.lite-dailymotion-embed--activated .lite-dailymotion-embed__play-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lite-dailymotion-embed--activated iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: var(--bg-color);
+}
+
+/* Screen Reader Only Content */
+.lite-dailymotion-embed__sr-only {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.lite-dailymotion-embed__skip-link {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 1000;
+}
+
+.lite-dailymotion-embed__skip-link:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  left: auto;
+  top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .lite-dailymotion-embed {
+    --play-button-size: 56px;
+    --loading-spinner-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lite-dailymotion-embed {
+    --play-button-size: 48px;
+    --loading-spinner-size: 28px;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .lite-dailymotion-embed__play-button:focus {
+    outline: 3px solid;
+    outline-offset: 2px;
+  }
+
+  .lite-dailymotion-embed__play-icon {
+    filter: contrast(1.5) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .lite-dailymotion-embed,
+  .lite-dailymotion-embed *,
+  .lite-dailymotion-embed *::before,
+  .lite-dailymotion-embed *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .lite-dailymotion-embed__play-button:hover {
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .lite-dailymotion-embed {
+    --bg-color: #1a1a1a;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .lite-dailymotion-embed {
+    display: none;
+  }
+}
+
+/* Focus Management */
+.lite-dailymotion-embed:focus-within {
+  outline: 2px solid #ff6900;
+  outline-offset: 2px;
+}
+
+/* Custom Play Button Support */
+.lite-dailymotion-embed[data-custom-play-button]
+  .lite-dailymotion-embed__play-button {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Error State */
+.lite-dailymotion-embed--error {
+  background-color: #f5f5f5;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
+
+.lite-dailymotion-embed--error::before {
+  content: '⚠️ Video unavailable';
+  display: block;
+}

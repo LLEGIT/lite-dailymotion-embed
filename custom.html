@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Embed Example</title>
+  <link rel="stylesheet" href="/src/lite-dailymotion-embed.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Custom Configuration Example</h1>
+    
+    <div 
+      data-dailymotion-id="x7u31wn"
+      data-title="Custom Video"
+      data-mute="true"
+      data-start-time="30"
+      data-custom-class="custom-embed-class"
+      data-background-color="#1a1a1a"
+    ></div>
+  </div>
+
+  <script type="module" src="/src/index.ts"></script>
+  
+  <style>
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: system-ui, sans-serif;
+    }
+    
+    .custom-embed-class {
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+</body>
+</html>

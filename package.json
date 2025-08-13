@@ -1,0 +1,77 @@
+{
+  "name": "lite-dailymotion-embed",
+  "version": "1.0.0",
+  "description": "A lightweight, performant Dailymotion embed component with accessibility support",
+  "main": "dist/umd/lite-dailymotion-embed.umd.js",
+  "module": "dist/esm/lite-dailymotion-embed.esm.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/lite-dailymotion-embed.esm.js",
+      "require": "./dist/umd/lite-dailymotion-embed.umd.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./dist/lite-dailymotion-embed.css": "./dist/lite-dailymotion-embed.css"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run clean && npm run build:types && npm run build:esm && npm run build:umd && npm run build:css",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:esm": "vite build --config vite.config.esm.ts",
+    "build:umd": "vite build --config vite.config.umd.ts",
+    "build:css": "postcss src/lite-dailymotion-embed.css -o dist/lite-dailymotion-embed.css",
+    "clean": "rimraf dist",
+    "lint": "prettier --check \"src/**/*.{ts,css,js,html}\" --cache",
+    "lint:fix": "prettier --write \"src/**/*.{ts,css,js,html}\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "format": "prettier --write src/**/*.{ts,css}",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "dailymotion",
+    "embed",
+    "performance",
+    "lightweight",
+    "accessibility",
+    "typescript",
+    "web-components"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.0",
+    "autoprefixer": "^10.4.16",
+    "globals": "^16.3.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jiti": "^2.5.1",
+    "postcss": "^8.4.31",
+    "postcss-cli": "^10.1.0",
+    "prettier": "3.6.2",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.9.2",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.6.3"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
