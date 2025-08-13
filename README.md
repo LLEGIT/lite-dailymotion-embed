@@ -1,17 +1,19 @@
 # Lite Dailymotion Embed
 
-A lightweight, performant TypeScript library for embedding Dailymotion videos with optimal Core Web Vitals performance and full accessibility support.
+A lightweight, performant TypeScript library for embedding Dailymotion videos using a custom HTML element `<lite-dailymotion>`. Optimized for Core Web Vitals performance with full accessibility support.
 
 ## Features
 
 - 🚀 **Performance Optimized**: Reduces FCP, LCP, and CLS by lazy loading the actual iframe
 - ♿ **Accessibility First**: Full keyboard navigation, screen reader support, and ARIA attributes
-- 🎨 **Customizable**: Extensive theming options and custom play button support
+- 🎨 **Customizable**: Extensive theming options with CSS custom properties
 - 📱 **Responsive**: Works perfectly on all device sizes
 - 🔧 **Framework Agnostic**: Works with any framework or vanilla JavaScript
 - 📦 **Multiple Formats**: ESM and UMD builds available
 - 🧪 **Well Tested**: Comprehensive unit and E2E tests
 - 🌐 **Modern Browser Support**: Works in all modern browsers with graceful degradation
+- 🎯 **Custom Element**: Simple `<lite-dailymotion>` HTML element (inspired by lite-youtube-embed)
+- 🎛️ **Neutral Design**: Clean, customizable play button without platform-specific branding
 
 ## Installation
 
@@ -25,7 +27,10 @@ npm install lite-dailymotion-embed
 
 ```html
 <!-- CSS -->
-<link rel="stylesheet" href="https://unpkg.com/lite-dailymotion-embed/dist/lite-dailymotion-embed.css">
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/lite-dailymotion-embed/dist/lite-dailymotion-embed.css"
+/>
 
 <!-- JavaScript (UMD) -->
 <script src="https://unpkg.com/lite-dailymotion-embed/dist/umd/lite-dailymotion-embed.umd.js"></script>
@@ -38,144 +43,133 @@ npm install lite-dailymotion-embed
 
 ## Quick Start
 
-### HTML (Auto-initialization)
+### Using the Custom Element
+
+The `<lite-dailymotion>` custom element provides the easiest way to embed Dailymotion videos:
 
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <link rel="stylesheet" href="lite-dailymotion-embed.css">
-</head>
-<body>
-  <!-- Basic embed -->
-  <div data-dailymotion-id="x7u31wn" data-title="My Video"></div>
-  
-  <!-- With custom options -->
-  <div 
-    data-dailymotion-id="x7u31wn"
-    data-title="Custom Video"
-    data-autoplay="false"
-    data-mute="true"
-    data-start-time="30"
-    data-custom-class="my-video"
-  ></div>
+  <head>
+    <link rel="stylesheet" href="lite-dailymotion-embed.css" />
+  </head>
+  <body>
+    <!-- Simple video embed -->
+    <lite-dailymotion videoid="x7u31wn" title="My Video"></lite-dailymotion>
 
-  <script src="lite-dailymotion-embed.umd.js"></script>
-</body>
+    <!-- With custom options -->
+    <lite-dailymotion
+      videoid="x7u31wn"
+      title="Tutorial Video"
+      autoplay="false"
+      mute="true"
+      starttime="30"
+    >
+    </lite-dailymotion>
+
+    <script src="lite-dailymotion-embed.umd.js"></script>
+  </body>
 </html>
 ```
+
+### Custom Element Attributes
+
+| Attribute      | Type      | Default               | Description                   |
+| -------------- | --------- | --------------------- | ----------------------------- |
+| `videoid`      | `string`  | **required**          | Dailymotion video ID or URL   |
+| `title`        | `string`  | `"Dailymotion video"` | Video title for accessibility |
+| `thumbnailurl` | `string`  | auto-generated        | Custom thumbnail URL          |
+| `autoplay`     | `boolean` | `true`                | Auto-play when activated      |
+| `mute`         | `boolean` | `false`               | Mute the video                |
+| `starttime`    | `number`  | `0`                   | Start time in seconds         |
+| `customclass`  | `string`  | `""`                  | Additional CSS class          |
+| `nolazy`       | `boolean` | `false`               | Disable lazy loading          |
 
 ### JavaScript/TypeScript
 
 ```typescript
-import { LiteDailymotionEmbed } from 'lite-dailymotion-embed'
-import 'lite-dailymotion-embed/dist/lite-dailymotion-embed.css'
+import 'lite-dailymotion-embed';
+import 'lite-dailymotion-embed/dist/lite-dailymotion-embed.css';
 
-// Create a single embed
-const embed = new LiteDailymotionEmbed('#my-video', {
-  videoId: 'x7u31wn',
-  title: 'My Awesome Video',
-  autoplay: true,
-  mute: false,
-  customClass: 'my-custom-embed',
-  onActivated: (element) => {
-    console.log('Video activated!', element)
-  }
-})
+// The custom element is automatically registered as <lite-dailymotion>
+// You can now use it in your HTML or create it programmatically
 
-// Initialize all embeds on the page
-const embeds = LiteDailymotionEmbed.initAll('[data-dailymotion-id]')
+// Create elements programmatically
+const videoElement = document.createElement('lite-dailymotion');
+videoElement.setAttribute('videoid', 'x7u31wn');
+videoElement.setAttribute('title', 'My Video');
+document.body.appendChild(videoElement);
+
+// Access element methods
+const element = document.querySelector('lite-dailymotion');
+if (element) {
+  element.play(); // Manually activate the video
+  console.log(element.getState()); // Get current state
+  console.log(element.getMetrics()); // Get performance metrics
+}
 ```
 
-## Configuration Options
+### Manual Registration
+
+If you need to register the custom element with a different tag name:
 
 ```typescript
-interface DailymotionEmbedOptions {
-  videoId: string                    // Required: Video ID or URL
-  title?: string                     // Video title for accessibility
-  thumbnailUrl?: string              // Custom thumbnail URL
-  autoplay?: boolean                 // Autoplay when activated (default: true)
-  mute?: boolean                     // Mute the video (default: false)
-  startTime?: number                 // Start time in seconds (default: 0)
-  params?: Record<string, any>       // Additional player parameters
-  customClass?: string               // Custom CSS class
-  nolazy?: boolean                   // Disable lazy loading (default: false)
-  cookie?: boolean                   // Cookie setting for GDPR (default: true)
-  backgroundColor?: string           // Background color (default: '#000000')
-  aspectRatio?: number               // Aspect ratio (default: 16/9)
-  playButton?: HTMLElement | string  // Custom play button
-  
-  // Callbacks
-  onActivated?: (element: HTMLElement) => void
-  onPlay?: (element: HTMLElement) => void
-  onPause?: (element: HTMLElement) => void
-  onEnd?: (element: HTMLElement) => void
-  
-  // Accessibility
-  accessibility?: {
-    playButtonLabel?: string
-    loadingLabel?: string
-    skipToVideoLabel?: string
-  }
-}
+import { LiteDailymotionEmbed } from 'lite-dailymotion-embed';
+
+// Register with a custom tag name
+LiteDailymotionEmbed.register('my-dailymotion-player');
+
+// Now you can use <my-dailymotion-player> instead
 ```
 
 ## API Reference
 
-### Instance Methods
+### Custom Element Methods
+
+The `<lite-dailymotion>` element provides the following methods:
 
 ```typescript
+const element = document.querySelector('lite-dailymotion');
+
+// Get video ID
+const videoId = element.getVideoId();
+
 // Get current state
-const state = embed.getState()
-// Returns: { isActivated, isLoading, isPlaying, isPaused, hasEnded }
+const state = element.getState();
+// Returns: PlayerState.IDLE | PlayerState.LOADING | PlayerState.LOADED | PlayerState.ERROR
 
 // Get performance metrics
-const metrics = embed.getMetrics()
-// Returns: { activationTime, thumbnailLoadTime, playerLoadTime }
+const metrics = element.getMetrics();
+// Returns: { activationTime?, thumbnailLoadTime?, playerLoadTime? }
 
-// Manually activate the embed
-embed.play()
-
-// Destroy the instance
-embed.destroy()
+// Manually activate the embed (starts loading the iframe)
+element.play();
 ```
 
 ### Static Methods
 
 ```typescript
-// Initialize all embeds matching a selector
-const embeds = LiteDailymotionEmbed.initAll('[data-dailymotion-id]')
-```
+import { LiteDailymotionEmbed } from 'lite-dailymotion-embed';
 
-## Data Attributes
+// Register the custom element (automatically called on import)
+LiteDailymotionEmbed.register(); // Registers as <lite-dailymotion>
+LiteDailymotionEmbed.register('my-player'); // Registers as <my-player>
 
-When using auto-initialization, you can configure embeds using data attributes:
-
-```html
-<div 
-  data-dailymotion-id="x7u31wn"           <!-- Required: Video ID -->
-  data-title="Video Title"                <!-- Video title -->
-  data-thumbnail="https://..."            <!-- Custom thumbnail URL -->
-  data-autoplay="true"                    <!-- Autoplay (true/false) -->
-  data-mute="false"                       <!-- Mute (true/false) -->
-  data-start-time="30"                    <!-- Start time in seconds -->
-  data-custom-class="my-class"            <!-- Custom CSS class -->
-  data-nolazy="false"                     <!-- Disable lazy loading -->
-  data-cookie="true"                      <!-- Cookie setting -->
-  data-background-color="#000000"         <!-- Background color -->
-  data-aspect-ratio="1.7777777778"        <!-- Aspect ratio -->
-></div>
+// Initialize all elements on the page
+LiteDailymotionEmbed.initAll();
 ```
 
 ## Styling
 
 ### CSS Custom Properties
 
+The `<lite-dailymotion>` element supports various CSS custom properties for styling:
+
 ```css
-.lite-dailymotion-embed {
-  --aspect-ratio: 1.7777777778;      /* 16:9 aspect ratio */
-  --bg-color: #000000;               /* Background color */
-  --play-button-size: 68px;          /* Play button size */
+lite-dailymotion {
+  --aspect-ratio: 1.7777777778; /* 16:9 aspect ratio */
+  --bg-color: #000000; /* Background color */
+  --play-button-size: 68px; /* Play button size */
   --play-button-bg: rgba(255, 105, 0, 0.9);
   --play-button-hover-bg: rgba(255, 105, 0, 1);
   --loading-spinner-size: 40px;
@@ -188,7 +182,7 @@ When using auto-initialization, you can configure embeds using data attributes:
 
 ```css
 /* Custom embed styling */
-.my-custom-embed {
+lite-dailymotion.my-custom-embed {
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -196,9 +190,14 @@ When using auto-initialization, you can configure embeds using data attributes:
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .lite-dailymotion-embed {
+  lite-dailymotion {
     --play-button-size: 56px;
   }
+}
+
+/* Custom class attribute */
+lite-dailymotion[customclass='premium'] {
+  border: 2px solid gold;
 }
 ```
 
@@ -220,18 +219,21 @@ When using auto-initialization, you can configure embeds using data attributes:
 ## Performance Benefits
 
 ### Before Activation (Lightweight Facade)
+
 - **~2KB** gzipped JavaScript
-- **~1KB** gzipped CSS  
+- **~1KB** gzipped CSS
 - No iframe loaded
 - Fast thumbnail loading
 - Intersection Observer for lazy loading
 
 ### After Activation
+
 - Iframe loaded only when user interacts
 - Optimal loading performance
 - Preserved user engagement
 
 ### Core Web Vitals Impact
+
 - **FCP**: Faster First Contentful Paint
 - **LCP**: Reduced Largest Contentful Paint
 - **CLS**: No Cumulative Layout Shift
@@ -248,23 +250,27 @@ When using auto-initialization, you can configure embeds using data attributes:
 ### React
 
 ```jsx
-import { useEffect, useRef } from 'react'
-import { LiteDailymotionEmbed } from 'lite-dailymotion-embed'
+import { useEffect } from 'react';
+import 'lite-dailymotion-embed';
+import 'lite-dailymotion-embed/dist/lite-dailymotion-embed.css';
 
-function VideoEmbed({ videoId, title }) {
-  const ref = useRef()
-  
-  useEffect(() => {
-    const embed = new LiteDailymotionEmbed(ref.current, {
-      videoId,
-      title,
-      onActivated: () => console.log('Video activated!')
-    })
-    
-    return () => embed.destroy()
-  }, [videoId, title])
-  
-  return <div ref={ref} />
+function VideoEmbed({ videoId, title, autoplay = true }) {
+  return (
+    <lite-dailymotion
+      videoid={videoId}
+      title={title}
+      autoplay={autoplay.toString()}
+    />
+  );
+}
+
+// Usage
+function App() {
+  return (
+    <div>
+      <VideoEmbed videoId="x7u31wn" title="My Video" autoplay={false} />
+    </div>
+  );
 }
 ```
 
@@ -272,25 +278,60 @@ function VideoEmbed({ videoId, title }) {
 
 ```vue
 <template>
-  <div ref="embedRef"></div>
+  <lite-dailymotion
+    :videoid="videoId"
+    :title="title"
+    :autoplay="autoplay.toString()"
+  />
 </template>
 
 <script>
-import { LiteDailymotionEmbed } from 'lite-dailymotion-embed'
+import 'lite-dailymotion-embed';
+import 'lite-dailymotion-embed/dist/lite-dailymotion-embed.css';
 
 export default {
-  props: ['videoId', 'title'],
-  mounted() {
-    this.embed = new LiteDailymotionEmbed(this.$refs.embedRef, {
-      videoId: this.videoId,
-      title: this.title
-    })
+  props: {
+    videoId: String,
+    title: String,
+    autoplay: { type: Boolean, default: true },
   },
-  beforeUnmount() {
-    this.embed?.destroy()
-  }
-}
+};
 </script>
+```
+
+### Angular
+
+```typescript
+// app.component.ts
+import { Component } from '@angular/core';
+import 'lite-dailymotion-embed';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <lite-dailymotion
+      [attr.videoid]="videoId"
+      [attr.title]="title"
+      [attr.autoplay]="autoplay"
+    ></lite-dailymotion>
+  `,
+})
+export class AppComponent {
+  videoId = 'x7u31wn';
+  title = 'My Video';
+  autoplay = 'true';
+}
+```
+
+```typescript
+// app.module.ts
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
+@NgModule({
+  // ... other config
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+})
+export class AppModule {}
 ```
 
 ## Development
@@ -330,9 +371,3 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Credits
 
 Inspired by [lite-youtube-embed](https://github.com/paulirish/lite-youtube-embed) by Paul Irish.
-
-## Support
-
-- 🐛 [Report Issues](https://github.com/your-username/lite-dailymotion-embed/issues)
-- 💡 [Feature Requests](https://github.com/your-username/lite-dailymotion-embed/issues)
-- 📖 [Documentation](https://github.com/your-username/lite-dailymotion-embed#readme)

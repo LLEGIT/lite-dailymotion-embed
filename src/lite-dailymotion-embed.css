@@ -2,9 +2,11 @@
 .lite-dailymotion-embed {
   --aspect-ratio: 1.7777777778; /* 16:9 */
   --bg-color: #000000;
+  /* Color scheme variables */
+  --primary-color: #ff6900;
   --play-button-size: 68px;
-  --play-button-bg: rgba(255, 105, 0, 0.9);
-  --play-button-hover-bg: rgba(255, 105, 0, 1);
+  --play-button-bg: rgba(0, 0, 0, 0.8);
+  --play-button-hover-bg: rgba(0, 0, 0, 0.9);
   --loading-spinner-size: 40px;
   --border-radius: 0;
   --transition-duration: 0.3s;

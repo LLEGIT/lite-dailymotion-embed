@@ -48,18 +48,19 @@ export interface DailymotionEmbedOptions {
  * Performance metrics interface
  */
 export interface PerformanceMetrics {
+  initTime: number;
   activationTime: number;
   thumbnailLoadTime: number;
   playerLoadTime: number;
+  loadTime: number;
 }
 
 /**
- * Player state interface
+ * Player state enum
  */
-export interface PlayerState {
-  isActivated: boolean;
-  isLoading: boolean;
-  isPlaying: boolean;
-  isPaused: boolean;
-  hasEnded: boolean;
+export enum PlayerState {
+  IDLE = 'idle',
+  LOADING = 'loading',
+  LOADED = 'loaded',
+  ERROR = 'error',
 }

@@ -1,14 +1,14 @@
 {
   "name": "lite-dailymotion-embed",
   "version": "1.0.0",
-  "description": "A lightweight, performant Dailymotion embed component with accessibility support",
-  "main": "dist/umd/lite-dailymotion-embed.umd.js",
-  "module": "dist/esm/lite-dailymotion-embed.esm.js",
+  "description": "A lightweight, performant Dailymotion custom element with accessibility support (<lite-dailymotion>)",
+  "main": "dist/umd/lite-dailymotion-embed.umd.umd.js",
+  "module": "dist/esm/lite-dailymotion-embed.esm.mjs",
   "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/lite-dailymotion-embed.esm.js",
-      "require": "./dist/umd/lite-dailymotion-embed.umd.js",
+      "import": "./dist/esm/lite-dailymotion-embed.esm.mjs",
+      "require": "./dist/umd/lite-dailymotion-embed.umd.umd.js",
       "types": "./dist/types/index.d.ts"
     },
     "./dist/lite-dailymotion-embed.css": "./dist/lite-dailymotion-embed.css"
@@ -67,6 +67,7 @@
     "postcss-cli": "^10.1.0",
     "prettier": "3.6.2",
     "rimraf": "^5.0.5",
+    "terser": "^5.43.1",
     "ts-jest": "^29.1.1",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.1",

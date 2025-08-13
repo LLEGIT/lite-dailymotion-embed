@@ -1,174 +1,289 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lite Dailymotion Embed - Development</title>
-  <link rel="stylesheet" href="/src/lite-dailymotion-embed.css">
-</head>
-<body>
-  <div class="container" style="max-width: 800px; margin: 0 auto; padding: 20px;">
-    <h1>Lite Dailymotion Embed - Development</h1>
-    
-    <h2>Basic Example</h2>
-    <div 
-      data-dailymotion-id="x7u31wn"
-      data-title="Sample Dailymotion Video"
-      style="margin-bottom: 2rem;"
-    ></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lite Dailymotion Embed - Custom Element Example</title>
+    <link rel="stylesheet" href="dist/lite-dailymotion-embed.css" />
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 2rem;
+        background: #f5f5f5;
+      }
 
-    <h2>Custom Configuration</h2>
-    <div 
-      data-dailymotion-id="x5e9eog"
-      data-title="Custom Video with Settings"
-      data-autoplay="false"
-      data-mute="true"
-      data-start-time="30"
-      data-custom-class="custom-embed"
-      style="margin-bottom: 2rem;"
-    ></div>
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
 
-    <h2>No Lazy Loading</h2>
-    <div 
-      data-dailymotion-id="x7u31wn"
-      data-title="Video with No Lazy Loading"
-      data-nolazy="true"
-      style="margin-bottom: 2rem;"
-    ></div>
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
 
-    <h2>Custom Aspect Ratio</h2>
-    <div 
-      data-dailymotion-id="x7u31wn"
-      data-title="Square Video"
-      data-aspect-ratio="1"
-      style="margin-bottom: 2rem;"
-    ></div>
+      .example {
+        background: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
 
-    <h2>Programmatic Example</h2>
-    <div id="programmatic-embed" style="margin-bottom: 2rem;"></div>
+      .example h2 {
+        color: #666;
+        margin-top: 0;
+        margin-bottom: 1rem;
+      }
 
-    <h2>API Usage</h2>
-    <div style="margin-bottom: 2rem;">
-      <button id="get-state">Get State</button>
-      <button id="get-metrics">Get Metrics</button>
-      <button id="activate-embed">Activate First Embed</button>
-      <button id="destroy-embed">Destroy First Embed</button>
-      <pre id="output" style="background: #f5f5f5; padding: 1rem; margin-top: 1rem;"></pre>
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      lite-dailymotion {
+        display: block;
+        max-width: 100%;
+      }
+
+      .code {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 1rem;
+        font-family: 'Monaco', 'Consolas', monospace;
+        font-size: 0.9rem;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+
+      .feature {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 6px;
+        border-left: 4px solid #007bff;
+      }
+
+      .feature h3 {
+        margin: 0 0 0.5rem 0;
+        color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Lite Dailymotion Embed - Custom Element</h1>
+
+      <div class="example">
+        <h2>🎯 Simple Usage</h2>
+        <p>
+          Just use the <code>&lt;lite-dailymotion&gt;</code> custom element with
+          a video ID:
+        </p>
+
+        <div class="code">
+          &lt;lite-dailymotion videoid="x7u31wn" title="Amazing
+          Video"&gt;&lt;/lite-dailymotion&gt;
+        </div>
+
+        <lite-dailymotion
+          videoid="x7u31wn"
+          title="Amazing Video"
+        ></lite-dailymotion>
+      </div>
+
+      <div class="example">
+        <h2>🎨 Customized Examples</h2>
+
+        <div class="video-grid">
+          <div>
+            <h3>With Custom Title</h3>
+            <lite-dailymotion
+              videoid="x7u31wn"
+              title="Custom Video Title"
+              autoplay="false"
+            >
+            </lite-dailymotion>
+          </div>
+
+          <div>
+            <h3>Muted Autoplay</h3>
+            <lite-dailymotion
+              videoid="x7u31wn"
+              title="Muted Video"
+              mute="true"
+              autoplay="true"
+            >
+            </lite-dailymotion>
+          </div>
+
+          <div>
+            <h3>Start at Specific Time</h3>
+            <lite-dailymotion
+              videoid="x7u31wn"
+              title="Video starting at 30s"
+              starttime="30"
+            >
+            </lite-dailymotion>
+          </div>
+
+          <div>
+            <h3>Custom CSS Class</h3>
+            <lite-dailymotion
+              videoid="x7u31wn"
+              title="Styled Video"
+              customclass="my-custom-video"
+            >
+            </lite-dailymotion>
+          </div>
+        </div>
+      </div>
+
+      <div class="example">
+        <h2>📋 Available Attributes</h2>
+
+        <div class="features">
+          <div class="feature">
+            <h3>videoid</h3>
+            <p>Required. Dailymotion video ID or URL</p>
+          </div>
+          <div class="feature">
+            <h3>title</h3>
+            <p>Video title for accessibility</p>
+          </div>
+          <div class="feature">
+            <h3>thumbnailurl</h3>
+            <p>Custom thumbnail URL</p>
+          </div>
+          <div class="feature">
+            <h3>autoplay</h3>
+            <p>Auto-play when activated (true/false)</p>
+          </div>
+          <div class="feature">
+            <h3>mute</h3>
+            <p>Mute the video (true/false)</p>
+          </div>
+          <div class="feature">
+            <h3>starttime</h3>
+            <p>Start time in seconds</p>
+          </div>
+          <div class="feature">
+            <h3>customclass</h3>
+            <p>Additional CSS class</p>
+          </div>
+          <div class="feature">
+            <h3>nolazy</h3>
+            <p>Disable lazy loading (true/false)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="example">
+        <h2>🚀 Key Features</h2>
+
+        <div class="features">
+          <div class="feature">
+            <h3>⚡ Performance</h3>
+            <p>Lazy loading, intersection observer, and optimized thumbnails</p>
+          </div>
+          <div class="feature">
+            <h3>♿ Accessibility</h3>
+            <p>
+              Full keyboard navigation, screen reader support, and ARIA labels
+            </p>
+          </div>
+          <div class="feature">
+            <h3>📱 Responsive</h3>
+            <p>Adapts to any screen size with fluid aspect ratio</p>
+          </div>
+          <div class="feature">
+            <h3>🎨 Customizable</h3>
+            <p>CSS custom properties and theming support</p>
+          </div>
+          <div class="feature">
+            <h3>🔧 Framework Agnostic</h3>
+            <p>Works with any framework or vanilla HTML</p>
+          </div>
+          <div class="feature">
+            <h3>📦 Lightweight</h3>
+            <p>Minimal bundle size with no dependencies</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="example">
+        <h2>📝 Usage Examples</h2>
+
+        <h3>Basic HTML</h3>
+        <div class="code">
+          &lt;!-- Simple video embed --&gt; &lt;lite-dailymotion
+          videoid="x7u31wn"&gt;&lt;/lite-dailymotion&gt; &lt;!-- With title and
+          autoplay disabled --&gt; &lt;lite-dailymotion videoid="x7u31wn"
+          title="My Video Title" autoplay="false"&gt; &lt;/lite-dailymotion&gt;
+          &lt;!-- Muted autoplay starting at 1 minute --&gt;
+          &lt;lite-dailymotion videoid="x7u31wn" title="Tutorial Video"
+          mute="true" autoplay="true" starttime="60"&gt;
+          &lt;/lite-dailymotion&gt;
+        </div>
+
+        <h3>JavaScript API</h3>
+        <div class="code">
+          // Get element reference const video =
+          document.querySelector('lite-dailymotion'); // Play the video
+          video.play(); // Get video ID console.log(video.getVideoId()); // Get
+          current state console.log(video.getState()); // 'idle', 'loading',
+          'loaded', 'error' // Get performance metrics
+          console.log(video.getMetrics()); // Listen to events
+          video.addEventListener('lite-dailymotion-loaded', (e) => {
+          console.log('Video loaded!', e.detail.metrics); });
+          video.addEventListener('lite-dailymotion-error', (e) => {
+          console.error('Video error:', e.detail.error); });
+        </div>
+      </div>
     </div>
-  </div>
 
-  <script type="module">
-    import { LiteDailymotionEmbed } from '/src/index.ts'
+    <script
+      src="dist/esm/lite-dailymotion-embed.esm.mjs"
+      type="module"
+    ></script>
+    <script>
+      // Add some custom styling for the example
+      const style = document.createElement('style');
+      style.textContent = `
+            .my-custom-video {
+                border: 3px solid #007bff;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+        `;
+      document.head.appendChild(style);
 
-    // Create programmatic embed
-    const programmaticContainer = document.getElementById('programmatic-embed')
-    const programmaticEmbed = new LiteDailymotionEmbed(programmaticContainer, {
-      videoId: 'x7u31wn',
-      title: 'Programmatically Created Video',
-      autoplay: true,
-      mute: false,
-      customClass: 'programmatic-embed',
-      onActivated: (element) => {
-        console.log('Video activated:', element)
-        updateOutput('Video activated programmatically!')
-      }
-    })
+      // Example of programmatic usage
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('Lite Dailymotion custom elements initialized!');
 
-    // Get all auto-initialized embeds
-    const embeds = LiteDailymotionEmbed.initAll()
-    console.log('Auto-initialized embeds:', embeds)
-
-    // API demo functions
-    const output = document.getElementById('output')
-    
-    function updateOutput(text) {
-      output.textContent = text
-    }
-
-    document.getElementById('get-state').addEventListener('click', () => {
-      if (embeds.length > 0) {
-        const state = embeds[0].getState()
-        updateOutput(JSON.stringify(state, null, 2))
-      } else {
-        updateOutput('No embeds available')
-      }
-    })
-
-    document.getElementById('get-metrics').addEventListener('click', () => {
-      if (embeds.length > 0) {
-        const metrics = embeds[0].getMetrics()
-        updateOutput(JSON.stringify(metrics, null, 2))
-      } else {
-        updateOutput('No embeds available')
-      }
-    })
-
-    document.getElementById('activate-embed').addEventListener('click', () => {
-      if (embeds.length > 0) {
-        embeds[0].play()
-        updateOutput('First embed activated')
-      } else {
-        updateOutput('No embeds available')
-      }
-    })
-
-    document.getElementById('destroy-embed').addEventListener('click', () => {
-      if (embeds.length > 0) {
-        embeds[0].destroy()
-        updateOutput('First embed destroyed')
-      } else {
-        updateOutput('No embeds available')
-      }
-    })
-
-    // Accessibility demonstration
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'h' && e.ctrlKey) {
-        // Help shortcut
-        alert('Keyboard shortcuts:\n- Tab: Navigate to play buttons\n- Enter/Space: Activate video\n- Ctrl+H: Show this help')
-      }
-    })
-  </script>
-
-  <style>
-    .container {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.6;
-    }
-    
-    h1, h2 {
-      color: #333;
-    }
-    
-    button {
-      background: #ff6900;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      margin: 4px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    
-    button:hover {
-      background: #e55a00;
-    }
-    
-    button:focus {
-      outline: 2px solid #0066cc;
-      outline-offset: 2px;
-    }
-    
-    .custom-embed {
-      border: 2px solid #ff6900;
-      border-radius: 8px;
-    }
-    
-    .programmatic-embed {
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-    }
-  </style>
-</body>
+        // Example of listening to events
+        document.querySelectorAll('lite-dailymotion').forEach((video) => {
+          video.addEventListener('lite-dailymotion-loaded', (e) => {
+            console.log(
+              `Video ${video.getVideoId()} loaded in ${e.detail.metrics.loadTime - e.detail.metrics.activationTime}ms`
+            );
+          });
+        });
+      });
+    </script>
+  </body>
 </html>

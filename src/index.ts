@@ -7,6 +7,9 @@ import { domReady } from './utils';
 
 // Auto-initialize if not in module context
 if (typeof window !== 'undefined') {
+  // Register the custom element
+  LiteDailymotionEmbed.register();
+
   // Make available globally for UMD builds
   (
     window as typeof window & {
