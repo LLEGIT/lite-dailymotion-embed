@@ -85,7 +85,9 @@ export class LiteDailymotionEmbed extends HTMLElement {
   private init(): void {
     try {
       // Clear existing content
-      this.innerHTML = '';
+      while (this.firstChild) {
+        this.removeChild(this.firstChild);
+      }
 
       // Add CSS class
       this.classList.add(LiteDailymotionEmbed.CSS_CLASS);
@@ -121,26 +123,80 @@ export class LiteDailymotionEmbed extends HTMLElement {
       );
 
     // Set up the embed structure
-    this.innerHTML = `
-      <div class="lite-dailymotion-embed__thumbnail" style="background-image: url('${finalThumbnailUrl}')">
-        <div class="lite-dailymotion-embed__play-button">
-          <svg class="lite-dailymotion-embed__play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="5,3 19,12 5,21"/>
-          </svg>
-        </div>
-        <div class="lite-dailymotion-embed__title">${sanitizeHtml(title || '')}</div>
-      </div>
-    `;
+    // Create thumbnail container
+    const thumbnailDiv = document.createElement('div');
+    thumbnailDiv.className = 'lite-dailymotion-embed__thumbnail';
+    thumbnailDiv.style.backgroundImage = `url('${finalThumbnailUrl}')`;
+
+    // Create play button
+    const playButtonDiv = document.createElement('div');
+    playButtonDiv.className = 'lite-dailymotion-embed__play-button';
+
+    // Create play icon SVG
+    const playIconSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    );
+    playIconSvg.setAttribute('class', 'lite-dailymotion-embed__play-icon');
+    playIconSvg.setAttribute('viewBox', '0 0 24 24');
+    playIconSvg.setAttribute('fill', 'none');
+    playIconSvg.setAttribute('stroke', 'currentColor');
+    playIconSvg.setAttribute('stroke-width', '2');
+
+    const polygon = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'polygon'
+    );
+    polygon.setAttribute('points', '5,3 19,12 5,21');
+    playIconSvg.appendChild(polygon);
+
+    playButtonDiv.appendChild(playIconSvg);
+
+    // Create title
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'lite-dailymotion-embed__title';
+    titleDiv.textContent = sanitizeHtml(title || '');
+
+    // Assemble structure
+    thumbnailDiv.appendChild(playButtonDiv);
+    thumbnailDiv.appendChild(titleDiv);
+
+    this.appendChild(thumbnailDiv);
 
     // Add loading spinner for when activation occurs
     const loadingSpinner = document.createElement('div');
     loadingSpinner.className = 'lite-dailymotion-embed__loading-spinner';
-    loadingSpinner.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
-        <path d="M12 2a10 10 0 0 1 7.07 2.93" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-      </svg>
-    `;
+    // Create loading spinner SVG
+    const spinnerSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    );
+    spinnerSvg.setAttribute('viewBox', '0 0 24 24');
+    spinnerSvg.setAttribute('fill', 'currentColor');
+
+    const circle = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'circle'
+    );
+    circle.setAttribute('cx', '12');
+    circle.setAttribute('cy', '12');
+    circle.setAttribute('r', '10');
+    circle.setAttribute('stroke', 'currentColor');
+    circle.setAttribute('stroke-width', '2');
+    circle.setAttribute('fill', 'none');
+    circle.setAttribute('opacity', '0.3');
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M12 2a10 10 0 0 1 7.07 2.93');
+    path.setAttribute('stroke', 'currentColor');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke-linecap', 'round');
+
+    spinnerSvg.appendChild(circle);
+    spinnerSvg.appendChild(path);
+
+    loadingSpinner.appendChild(spinnerSvg);
     this.appendChild(loadingSpinner);
   }
 
@@ -239,7 +295,9 @@ export class LiteDailymotionEmbed extends HTMLElement {
       this.iframe.onerror = () => reject(new Error('Failed to load iframe'));
 
       // Clear content and add iframe
-      this.innerHTML = '';
+      while (this.firstChild) {
+        this.removeChild(this.firstChild);
+      }
       this.appendChild(this.iframe);
     });
   }
@@ -258,12 +316,26 @@ export class LiteDailymotionEmbed extends HTMLElement {
   }
 
   private showError(message: string): void {
-    this.innerHTML = `
-      <div class="lite-dailymotion-embed__error">
-        <div class="lite-dailymotion-embed__error-icon">⚠️</div>
-        <div class="lite-dailymotion-embed__error-message">${sanitizeHtml(message)}</div>
-      </div>
-    `;
+    // Remove existing children
+    while (this.firstChild) {
+      this.removeChild(this.firstChild);
+    }
+
+    const errorContainer = document.createElement('div');
+    errorContainer.className = 'lite-dailymotion-embed__error';
+
+    const errorIcon = document.createElement('div');
+    errorIcon.className = 'lite-dailymotion-embed__error-icon';
+    errorIcon.textContent = '⚠️';
+
+    const errorMessage = document.createElement('div');
+    errorMessage.className = 'lite-dailymotion-embed__error-message';
+    errorMessage.textContent = message;
+
+    errorContainer.appendChild(errorIcon);
+    errorContainer.appendChild(errorMessage);
+
+    this.appendChild(errorContainer);
   }
 
   private cleanup(): void {
