@@ -33,7 +33,7 @@ describe('StateManager', () => {
   it('should record activation and load times', () => {
     stateManager.recordActivationTime();
     stateManager.recordLoadTime();
-    
+
     const metrics = stateManager.getMetrics();
     expect(metrics.activationTime).toBeDefined();
     expect(metrics.loadTime).toBeDefined();
@@ -42,9 +42,9 @@ describe('StateManager', () => {
   it('should reset state and metrics', () => {
     stateManager.setState(PlayerState.LOADED);
     stateManager.recordActivationTime();
-    
+
     stateManager.reset();
-    
+
     expect(stateManager.getState()).toBe(PlayerState.IDLE);
     expect(Object.keys(stateManager.getMetrics())).toHaveLength(0);
   });

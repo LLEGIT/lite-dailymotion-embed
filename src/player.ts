@@ -44,7 +44,9 @@ export class PlayerLoader {
   /**
    * Creates an iframe element with the given options but doesn't load it
    */
-  static createIframe(options: DailymotionEmbedOptions & { videoId: string }): HTMLIFrameElement {
+  static createIframe(
+    options: DailymotionEmbedOptions & { videoId: string }
+  ): HTMLIFrameElement {
     const embedUrl = generateEmbedUrl(options.videoId, {
       autoplay: options.autoplay ?? true,
       mute: options.mute ?? false,
@@ -68,7 +70,9 @@ export class PlayerLoader {
   /**
    * Validates if the iframe can be loaded
    */
-  static validateIframeOptions(options: DailymotionEmbedOptions & { videoId: string }): boolean {
+  static validateIframeOptions(
+    options: DailymotionEmbedOptions & { videoId: string }
+  ): boolean {
     return Boolean(options.videoId && options.videoId.trim().length > 0);
   }
 }

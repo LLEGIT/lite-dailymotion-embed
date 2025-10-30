@@ -1,5 +1,9 @@
 import { DailymotionEmbedOptions } from './types';
-import { sanitizeHtml, getThumbnailUrl, getOptimalThumbnailQuality } from './utils';
+import {
+  sanitizeHtml,
+  getThumbnailUrl,
+  getOptimalThumbnailQuality,
+} from './utils';
 
 /**
  * DOM manipulation utilities for LiteDailymotionEmbed
@@ -12,7 +16,10 @@ export class DOMManager {
   /**
    * Creates and returns the main thumbnail container with play button and title
    */
-  static createThumbnailElement(options: DailymotionEmbedOptions & { videoId: string }, containerWidth?: number): HTMLElement {
+  static createThumbnailElement(
+    options: DailymotionEmbedOptions & { videoId: string },
+    containerWidth?: number
+  ): HTMLElement {
     const { videoId, title, thumbnailUrl } = options;
 
     // Create thumbnail URL if not provided
@@ -54,13 +61,19 @@ export class DOMManager {
   static createLoadingSpinner(): HTMLElement {
     const loadingSpinner = document.createElement('div');
     loadingSpinner.className = 'lite-dailymotion-embed__loading-spinner';
-    
+
     // Create loading spinner SVG
-    const spinnerSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const spinnerSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    );
     spinnerSvg.setAttribute('viewBox', '0 0 24 24');
     spinnerSvg.setAttribute('fill', 'currentColor');
 
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    const circle = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'circle'
+    );
     circle.setAttribute('cx', '12');
     circle.setAttribute('cy', '12');
     circle.setAttribute('r', '10');
@@ -108,14 +121,20 @@ export class DOMManager {
    * Creates the play icon SVG
    */
   private static createPlayIcon(): SVGElement {
-    const playIconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const playIconSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    );
     playIconSvg.setAttribute('class', 'lite-dailymotion-embed__play-icon');
     playIconSvg.setAttribute('viewBox', '0 0 24 24');
     playIconSvg.setAttribute('fill', 'none');
     playIconSvg.setAttribute('stroke', 'currentColor');
     playIconSvg.setAttribute('stroke-width', '2');
 
-    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    const polygon = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'polygon'
+    );
     polygon.setAttribute('points', '5,3 19,12 5,21');
     playIconSvg.appendChild(polygon);
 
@@ -135,7 +154,9 @@ export class DOMManager {
    * Preloads the thumbnail image
    */
   static preloadThumbnail(element: HTMLElement): void {
-    const thumbnail = element.querySelector('.lite-dailymotion-embed__thumbnail') as HTMLElement;
+    const thumbnail = element.querySelector(
+      '.lite-dailymotion-embed__thumbnail'
+    ) as HTMLElement;
     if (thumbnail) {
       const bgImage = thumbnail.style.backgroundImage;
       if (bgImage) {

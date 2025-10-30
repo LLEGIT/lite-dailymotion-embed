@@ -3,9 +3,7 @@ import {
   PlayerState,
   PerformanceMetrics,
 } from './types';
-import {
-  extractVideoId,
-} from './utils';
+import { extractVideoId } from './utils';
 import { DOMManager } from './dom';
 import { EventManager } from './events';
 import { StateManager } from './state';
@@ -100,7 +98,10 @@ export class LiteDailymotionEmbed extends HTMLElement {
   }
 
   private setupElement(): void {
-    const thumbnailElement = DOMManager.createThumbnailElement(this.options, this.clientWidth);
+    const thumbnailElement = DOMManager.createThumbnailElement(
+      this.options,
+      this.clientWidth
+    );
     const loadingSpinner = DOMManager.createLoadingSpinner();
 
     this.appendChild(thumbnailElement);

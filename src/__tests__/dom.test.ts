@@ -4,7 +4,9 @@ import { DailymotionEmbedOptions } from '../types';
 describe('DOMManager', () => {
   it('should have CSS class constants', () => {
     expect(DOMManager.CSS_CLASS).toBe('lite-dailymotion-embed');
-    expect(DOMManager.ACTIVATED_CLASS).toBe('lite-dailymotion-embed--activated');
+    expect(DOMManager.ACTIVATED_CLASS).toBe(
+      'lite-dailymotion-embed--activated'
+    );
     expect(DOMManager.LOADING_CLASS).toBe('lite-dailymotion-embed--loading');
   });
 
@@ -39,7 +41,7 @@ describe('DOMManager', () => {
     const div = document.createElement('div');
     div.innerHTML = '<p>test</p>';
     expect(div.children.length).toBe(1);
-    
+
     DOMManager.clearElement(div);
     expect(div.children.length).toBe(0);
   });

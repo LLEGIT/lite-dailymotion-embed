@@ -22,7 +22,10 @@ export class EventManager {
   /**
    * Sets up intersection observer for lazy loading
    */
-  setupIntersectionObserver(nolazy: boolean, preloadCallback: () => void): void {
+  setupIntersectionObserver(
+    nolazy: boolean,
+    preloadCallback: () => void
+  ): void {
     if (nolazy || !('IntersectionObserver' in window)) {
       return;
     }
@@ -75,7 +78,11 @@ export class EventManager {
   /**
    * Dispatches a custom event
    */
-  static dispatchCustomEvent(element: HTMLElement, eventName: string, detail?: unknown): void {
+  static dispatchCustomEvent(
+    element: HTMLElement,
+    eventName: string,
+    detail?: unknown
+  ): void {
     element.dispatchEvent(
       new CustomEvent(eventName, {
         detail,
