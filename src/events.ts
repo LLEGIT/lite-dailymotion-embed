@@ -17,6 +17,21 @@ export class EventManager {
   setupEventListeners(): void {
     this.element.addEventListener('click', this.handleClick.bind(this));
     this.element.addEventListener('keydown', this.handleKeydown.bind(this));
+
+    // Also attach listeners to the inner play button to ensure keyboard
+    // activation works when the button is focused (some browsers may
+    // intercept keyboard events on buttons).
+    const playButton = this.element.querySelector(
+      '.lite-dailymotion-embed__play-button'
+    );
+    if (playButton) {
+      playButton.addEventListener('click', this.handleClick.bind(this));
+      // Cast to EventListener to satisfy TS signatures for keydown
+      playButton.addEventListener(
+        'keydown',
+        this.handleKeydown.bind(this) as unknown as EventListener
+      );
+    }
   }
 
   /**
@@ -73,6 +88,17 @@ export class EventManager {
 
     this.element.removeEventListener('click', this.handleClick);
     this.element.removeEventListener('keydown', this.handleKeydown);
+
+    const playButton = this.element.querySelector(
+      '.lite-dailymotion-embed__play-button'
+    );
+    if (playButton) {
+      playButton.removeEventListener('click', this.handleClick);
+      playButton.removeEventListener(
+        'keydown',
+        this.handleKeydown as unknown as EventListener
+      );
+    }
   }
 
   /**
