@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "npm run clean && npm run build:types && npm run build:esm && npm run build:umd && npm run build:css",
+    "build": "pnpm run clean && pnpm run build:types && pnpm run build:esm && pnpm run build:umd && pnpm run build:css",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build:esm": "vite build --config vite.config.esm.ts",
     "build:umd": "vite build --config vite.config.umd.ts",
@@ -34,7 +34,7 @@
     "test:e2e:ui": "playwright test --ui",
     "format": "prettier --write src/**/*.{ts,css}",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build"
   },
   "keywords": [
     "dailymotion",
