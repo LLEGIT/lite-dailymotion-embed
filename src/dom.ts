@@ -35,13 +35,18 @@ export class DOMManager {
     thumbnailDiv.className = 'lite-dailymotion-embed__thumbnail';
     thumbnailDiv.style.backgroundImage = `url('${finalThumbnailUrl}')`;
 
-    // Create play button
-    const playButtonDiv = document.createElement('div');
-    playButtonDiv.className = 'lite-dailymotion-embed__play-button';
+    // Create play button (use a real button for accessibility and focusability)
+    const playButton = document.createElement('button');
+    playButton.className = 'lite-dailymotion-embed__play-button';
+    playButton.setAttribute('type', 'button');
+    // Accessible labeling
+    const ariaLabel = title ? `Play ${title}` : 'Play video';
+    playButton.setAttribute('aria-label', ariaLabel);
+    playButton.setAttribute('title', ariaLabel);
 
     // Create play icon SVG
     const playIconSvg = this.createPlayIcon();
-    playButtonDiv.appendChild(playIconSvg);
+    playButton.appendChild(playIconSvg);
 
     // Create title
     const titleDiv = document.createElement('div');
@@ -49,7 +54,7 @@ export class DOMManager {
     titleDiv.textContent = sanitizeHtml(title || '');
 
     // Assemble structure
-    thumbnailDiv.appendChild(playButtonDiv);
+    thumbnailDiv.appendChild(playButton);
     thumbnailDiv.appendChild(titleDiv);
 
     return thumbnailDiv;

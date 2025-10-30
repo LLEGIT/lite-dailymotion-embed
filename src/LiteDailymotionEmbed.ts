@@ -37,7 +37,6 @@ export class LiteDailymotionEmbed extends HTMLElement {
     this.stateManager = new StateManager();
     this.eventManager = new EventManager(this, this.activate.bind(this));
 
-    // Initialize when connected to DOM
     this.addEventListener('connected', this.init.bind(this));
   }
 
@@ -76,13 +75,14 @@ export class LiteDailymotionEmbed extends HTMLElement {
 
   private init(): void {
     try {
-      // Clear existing content
       DOMManager.clearElement(this);
 
-      // Add CSS class
       this.classList.add(DOMManager.CSS_CLASS);
 
-      // Add custom class if specified
+      this.setAttribute('role', 'region');
+      const label = this.getAttribute('title') || 'Dailymotion video';
+      this.setAttribute('aria-label', label);
+
       if (this.options.customClass) {
         this.classList.add(this.options.customClass);
       }
@@ -160,7 +160,6 @@ export class LiteDailymotionEmbed extends HTMLElement {
     this.eventManager.cleanup();
   }
 
-  // Public API methods
   play(): void {
     if (this.stateManager.isInState(PlayerState.IDLE)) {
       this.activate();
@@ -179,14 +178,12 @@ export class LiteDailymotionEmbed extends HTMLElement {
     return this.stateManager.getMetrics();
   }
 
-  // Static method to register the custom element
   static register(tagName: string = 'lite-dailymotion'): void {
     if (!customElements.get(tagName)) {
       customElements.define(tagName, LiteDailymotionEmbed);
     }
   }
 
-  // Static method to initialize all elements
   static initAll(): void {
     const elements = document.querySelectorAll('lite-dailymotion');
     elements.forEach((element) => {
