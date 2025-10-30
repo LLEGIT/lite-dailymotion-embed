@@ -1,5 +1,7 @@
 # Lite Dailymotion Embed
 
+[![CI](https://github.com/LLEGIT/lite-dailymotion-embed/actions/workflows/ci.yml/badge.svg)](https://github.com/LLEGIT/lite-dailymotion-embed/actions/workflows/ci.yml)
+
 A lightweight, performant TypeScript library for embedding Dailymotion videos using a custom HTML element `<lite-dailymotion>`. Optimized for Core Web Vitals performance with full accessibility support.
 
 ## Features
