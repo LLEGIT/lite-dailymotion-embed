@@ -5,25 +5,19 @@ import {
 } from './types';
 import {
   extractVideoId,
-  getThumbnailUrl,
-  sanitizeHtml,
-  generateEmbedUrl,
-  getOptimalThumbnailQuality,
 } from './utils';
+import { DOMManager } from './dom';
+import { EventManager } from './events';
+import { StateManager } from './state';
+import { PlayerLoader } from './player';
 
 /**
  * LiteDailymotionEmbed - Custom HTML element for Dailymotion embeds
  * Usage: <lite-dailymotion videoid="x7u31wn" title="Video title"></lite-dailymotion>
  */
 export class LiteDailymotionEmbed extends HTMLElement {
-  private state: PlayerState;
-  private metrics: Partial<PerformanceMetrics>;
-  private intersectionObserver?: IntersectionObserver;
-  private iframe?: HTMLIFrameElement;
-
-  private static readonly CSS_CLASS = 'lite-dailymotion-embed';
-  private static readonly ACTIVATED_CLASS = 'lite-dailymotion-embed--activated';
-  private static readonly LOADING_CLASS = 'lite-dailymotion-embed--loading';
+  private stateManager: StateManager;
+  private eventManager: EventManager;
 
   // Observed attributes for the custom element
   static get observedAttributes() {
@@ -42,8 +36,8 @@ export class LiteDailymotionEmbed extends HTMLElement {
   constructor() {
     super();
 
-    this.state = PlayerState.IDLE;
-    this.metrics = {};
+    this.stateManager = new StateManager();
+    this.eventManager = new EventManager(this, this.activate.bind(this));
 
     // Initialize when connected to DOM
     this.addEventListener('connected', this.init.bind(this));
@@ -85,23 +79,17 @@ export class LiteDailymotionEmbed extends HTMLElement {
   private init(): void {
     try {
       // Clear existing content
-      while (this.firstChild) {
-        this.removeChild(this.firstChild);
-      }
+      DOMManager.clearElement(this);
 
       // Add CSS class
-      this.classList.add(LiteDailymotionEmbed.CSS_CLASS);
+      this.classList.add(DOMManager.CSS_CLASS);
 
       // Add custom class if specified
       if (this.options.customClass) {
         this.classList.add(this.options.customClass);
       }
 
-      this.state = PlayerState.IDLE;
-      this.metrics = {
-        initTime: performance.now(),
-      };
-
+      this.stateManager.initialize();
       this.setupElement();
       this.setupIntersectionObserver();
       this.setupEventListeners();
@@ -112,244 +100,68 @@ export class LiteDailymotionEmbed extends HTMLElement {
   }
 
   private setupElement(): void {
-    const { videoId, title, thumbnailUrl } = this.options;
+    const thumbnailElement = DOMManager.createThumbnailElement(this.options, this.clientWidth);
+    const loadingSpinner = DOMManager.createLoadingSpinner();
 
-    // Create thumbnail URL if not provided
-    const finalThumbnailUrl =
-      thumbnailUrl ||
-      getThumbnailUrl(
-        videoId,
-        getOptimalThumbnailQuality(this.clientWidth || 640)
-      );
-
-    // Set up the embed structure
-    // Create thumbnail container
-    const thumbnailDiv = document.createElement('div');
-    thumbnailDiv.className = 'lite-dailymotion-embed__thumbnail';
-    thumbnailDiv.style.backgroundImage = `url('${finalThumbnailUrl}')`;
-
-    // Create play button
-    const playButtonDiv = document.createElement('div');
-    playButtonDiv.className = 'lite-dailymotion-embed__play-button';
-
-    // Create play icon SVG
-    const playIconSvg = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'svg'
-    );
-    playIconSvg.setAttribute('class', 'lite-dailymotion-embed__play-icon');
-    playIconSvg.setAttribute('viewBox', '0 0 24 24');
-    playIconSvg.setAttribute('fill', 'none');
-    playIconSvg.setAttribute('stroke', 'currentColor');
-    playIconSvg.setAttribute('stroke-width', '2');
-
-    const polygon = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'polygon'
-    );
-    polygon.setAttribute('points', '5,3 19,12 5,21');
-    playIconSvg.appendChild(polygon);
-
-    playButtonDiv.appendChild(playIconSvg);
-
-    // Create title
-    const titleDiv = document.createElement('div');
-    titleDiv.className = 'lite-dailymotion-embed__title';
-    titleDiv.textContent = sanitizeHtml(title || '');
-
-    // Assemble structure
-    thumbnailDiv.appendChild(playButtonDiv);
-    thumbnailDiv.appendChild(titleDiv);
-
-    this.appendChild(thumbnailDiv);
-
-    // Add loading spinner for when activation occurs
-    const loadingSpinner = document.createElement('div');
-    loadingSpinner.className = 'lite-dailymotion-embed__loading-spinner';
-    // Create loading spinner SVG
-    const spinnerSvg = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'svg'
-    );
-    spinnerSvg.setAttribute('viewBox', '0 0 24 24');
-    spinnerSvg.setAttribute('fill', 'currentColor');
-
-    const circle = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'circle'
-    );
-    circle.setAttribute('cx', '12');
-    circle.setAttribute('cy', '12');
-    circle.setAttribute('r', '10');
-    circle.setAttribute('stroke', 'currentColor');
-    circle.setAttribute('stroke-width', '2');
-    circle.setAttribute('fill', 'none');
-    circle.setAttribute('opacity', '0.3');
-
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M12 2a10 10 0 0 1 7.07 2.93');
-    path.setAttribute('stroke', 'currentColor');
-    path.setAttribute('stroke-width', '2');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke-linecap', 'round');
-
-    spinnerSvg.appendChild(circle);
-    spinnerSvg.appendChild(path);
-
-    loadingSpinner.appendChild(spinnerSvg);
+    this.appendChild(thumbnailElement);
     this.appendChild(loadingSpinner);
   }
 
   private setupIntersectionObserver(): void {
-    if (this.options.nolazy || !('IntersectionObserver' in window)) {
-      return;
-    }
-
-    this.intersectionObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.preloadThumbnail();
-            this.intersectionObserver?.unobserve(this);
-          }
-        });
-      },
-      { rootMargin: '100px' }
+    this.eventManager.setupIntersectionObserver(
+      this.options.nolazy || false,
+      () => DOMManager.preloadThumbnail(this)
     );
-
-    this.intersectionObserver.observe(this);
   }
 
   private setupEventListeners(): void {
-    this.addEventListener('click', this.handleClick.bind(this));
-    this.addEventListener('keydown', this.handleKeydown.bind(this));
-  }
-
-  private handleClick(event: Event): void {
-    event.preventDefault();
-    this.activate();
-  }
-
-  private handleKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      this.activate();
-    }
+    this.eventManager.setupEventListeners();
   }
 
   private async activate(): Promise<void> {
-    if (this.state !== PlayerState.IDLE) {
+    if (!this.stateManager.isInState(PlayerState.IDLE)) {
       return;
     }
 
-    this.state = PlayerState.LOADING;
-    this.classList.add(LiteDailymotionEmbed.LOADING_CLASS);
-    this.metrics.activationTime = performance.now();
+    this.stateManager.setState(PlayerState.LOADING);
+    this.classList.add(DOMManager.LOADING_CLASS);
+    this.stateManager.recordActivationTime();
 
     try {
-      await this.loadPlayer();
-      this.state = PlayerState.LOADED;
-      this.classList.add(LiteDailymotionEmbed.ACTIVATED_CLASS);
-      this.classList.remove(LiteDailymotionEmbed.LOADING_CLASS);
+      await PlayerLoader.loadPlayer(this, this.options);
+      this.stateManager.setState(PlayerState.LOADED);
+      this.classList.add(DOMManager.ACTIVATED_CLASS);
+      this.classList.remove(DOMManager.LOADING_CLASS);
 
-      this.metrics.loadTime = performance.now();
-      this.dispatchEvent(
-        new CustomEvent('lite-dailymotion-loaded', {
-          detail: { metrics: this.metrics },
-        })
-      );
+      this.stateManager.recordLoadTime();
+      EventManager.dispatchCustomEvent(this, 'lite-dailymotion-loaded', {
+        metrics: this.stateManager.getMetrics(),
+      });
     } catch (error) {
-      this.state = PlayerState.ERROR;
-      this.classList.remove(LiteDailymotionEmbed.LOADING_CLASS);
+      this.stateManager.setState(PlayerState.ERROR);
+      this.classList.remove(DOMManager.LOADING_CLASS);
       console.error('Failed to load Dailymotion player:', error);
       this.showError('Failed to load video player');
 
-      this.dispatchEvent(
-        new CustomEvent('lite-dailymotion-error', {
-          detail: { error },
-        })
-      );
-    }
-  }
-
-  private async loadPlayer(): Promise<void> {
-    const embedUrl = generateEmbedUrl(this.options.videoId, {
-      autoplay: this.options.autoplay ?? true,
-      mute: this.options.mute ?? false,
-      start: this.options.startTime ?? 0,
-      ...this.options.params,
-    });
-
-    return new Promise((resolve, reject) => {
-      this.iframe = document.createElement('iframe');
-      this.iframe.src = embedUrl;
-      this.iframe.setAttribute('frameborder', '0');
-      this.iframe.setAttribute('allowfullscreen', '');
-      this.iframe.setAttribute(
-        'allow',
-        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-      );
-      this.iframe.title = this.options.title || 'Dailymotion video';
-
-      this.iframe.onload = () => resolve();
-      this.iframe.onerror = () => reject(new Error('Failed to load iframe'));
-
-      // Clear content and add iframe
-      while (this.firstChild) {
-        this.removeChild(this.firstChild);
-      }
-      this.appendChild(this.iframe);
-    });
-  }
-
-  private preloadThumbnail(): void {
-    const thumbnail = this.querySelector(
-      '.lite-dailymotion-embed__thumbnail'
-    ) as HTMLElement;
-    if (thumbnail) {
-      const bgImage = thumbnail.style.backgroundImage;
-      if (bgImage) {
-        const img = new Image();
-        img.src = bgImage.slice(5, -2); // Remove url(" and ")
-      }
+      EventManager.dispatchCustomEvent(this, 'lite-dailymotion-error', {
+        error,
+      });
     }
   }
 
   private showError(message: string): void {
-    // Remove existing children
-    while (this.firstChild) {
-      this.removeChild(this.firstChild);
-    }
-
-    const errorContainer = document.createElement('div');
-    errorContainer.className = 'lite-dailymotion-embed__error';
-
-    const errorIcon = document.createElement('div');
-    errorIcon.className = 'lite-dailymotion-embed__error-icon';
-    errorIcon.textContent = '⚠️';
-
-    const errorMessage = document.createElement('div');
-    errorMessage.className = 'lite-dailymotion-embed__error-message';
-    errorMessage.textContent = message;
-
-    errorContainer.appendChild(errorIcon);
-    errorContainer.appendChild(errorMessage);
-
-    this.appendChild(errorContainer);
+    DOMManager.clearElement(this);
+    const errorElement = DOMManager.createErrorElement(message);
+    this.appendChild(errorElement);
   }
 
   private cleanup(): void {
-    if (this.intersectionObserver) {
-      this.intersectionObserver.disconnect();
-    }
-
-    this.removeEventListener('click', this.handleClick);
-    this.removeEventListener('keydown', this.handleKeydown);
+    this.eventManager.cleanup();
   }
 
   // Public API methods
   play(): void {
-    if (this.state === PlayerState.IDLE) {
+    if (this.stateManager.isInState(PlayerState.IDLE)) {
       this.activate();
     }
   }
@@ -359,11 +171,11 @@ export class LiteDailymotionEmbed extends HTMLElement {
   }
 
   getState(): PlayerState {
-    return this.state;
+    return this.stateManager.getState();
   }
 
   getMetrics(): Partial<PerformanceMetrics> {
-    return { ...this.metrics };
+    return this.stateManager.getMetrics();
   }
 
   // Static method to register the custom element

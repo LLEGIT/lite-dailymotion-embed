@@ -1,4 +1,8 @@
 export { LiteDailymotionEmbed } from './LiteDailymotionEmbed';
+export { DOMManager } from './dom';
+export { EventManager } from './events';
+export { StateManager } from './state';
+export { PlayerLoader } from './player';
 export * from './types';
 export * from './utils';
 
